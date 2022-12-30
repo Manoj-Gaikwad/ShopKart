@@ -136,6 +136,11 @@ namespace First_Project.Repository
             return await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.ContactNo == contactno);
         }
 
+        public async Task<EmployeeDetails> Testing(string contactno)
+        {
+            return await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.ContactNo == contactno);
+        }
+
 
     }
 }
