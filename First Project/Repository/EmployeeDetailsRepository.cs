@@ -136,9 +136,32 @@ namespace First_Project.Repository
             return await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.ContactNo == contactno);
         }
 
-        public async Task<EmployeeDetails> Testing(string contactno)
+        //public async Task<EmployeeDetails> Testing(string contactno)
+        //{
+        //    return await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.ContactNo == contactno);
+        //}
+
+
+        //public async Task<AllData> Test(int id)
+        //{
+        //    var data = await (from EmployeeDetails in dBConnection.employeeDetails
+        //                      join DepartmentData in dBConnection.department
+        //                      on EmployeeDetails.EmpId equals DepartmentData.EmpId
+        //                      select new AllData()
+        //                      {
+        //                          EmpId = EmployeeDetails.EmpId,
+        //                          FirstName = EmployeeDetails.FirstName,
+        //                          LastName = EmployeeDetails.LastName,
+        //                          Email = EmployeeDetails.Email,
+        //                          DName = DepartmentData.DName
+        //                      }).FirstOrDefaultAsync();
+        //    return data;
+
+        //}
+
+        public async Task<List<EmployeeDetails>> EmpAll()
         {
-            return await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.ContactNo == contactno);
+            return await dBConnection.employeeDetails.ToListAsync();
         }
 
 

@@ -9,6 +9,7 @@ namespace First_Project.Data
     public class CartData
     {
         [Key]
+        public int id { get; set; }
         public int pid { get; set; }
         public string ptype { get; set; }
         public string pname { get; set; }
@@ -17,5 +18,6 @@ namespace First_Project.Data
         public int pquantity { get; set; }
         public int pprice { get; set; }
         public string pimage { get; set; }
+        
     }
 }

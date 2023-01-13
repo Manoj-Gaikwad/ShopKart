@@ -26,6 +26,10 @@ namespace First_Project.Controllers
             return await this.icustomerDataRepository.addCoustomerData(customerData);
         }
 
-
+        [HttpGet("getAllGender")]
+        public async Task<List<Gender>> GetGender()
+        {
+            return await icustomerDataRepository.GetGender();
+        }
     }
 }

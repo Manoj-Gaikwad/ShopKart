@@ -32,8 +32,7 @@ namespace First_Project
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("MasterConnString");
-            services
-               .AddDbContext<DBConnection>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+            services.AddDbContext<DBConnection>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             services.AddTransient<IEmplyeeDetailsRepository, EmployeeDetailsRepository>();
             services.AddTransient<IPersonsDataRepositiory,PersonsDataRepository>();
             services.AddTransient<ICompanyDataRepository, CompanyDataRepository>();
