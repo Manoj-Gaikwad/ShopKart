@@ -6,6 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 
 namespace First_Project.Controllers
 {
@@ -14,10 +19,12 @@ namespace First_Project.Controllers
     public class EmployeeDetailsController : ControllerBase
     {
         public readonly IEmplyeeDetailsRepository emplyeeDetailsRepository;
+        private readonly IConfiguration configuration;
 
-        public EmployeeDetailsController(IEmplyeeDetailsRepository emplyeeDetailsRepository)
+        public EmployeeDetailsController(IEmplyeeDetailsRepository emplyeeDetailsRepository, IConfiguration configuration)
         {
             this.emplyeeDetailsRepository = emplyeeDetailsRepository;
+            this.configuration = configuration;
         }
 
         [HttpPost("addEmployeeDetails")]
@@ -35,15 +42,15 @@ namespace First_Project.Controllers
         }
 
         [HttpGet("getEmployeeDetailsById/{id}")]
-        
-           public async Task<EmployeeDetails>GetEmployeeDetails(int id)
+
+        public async Task<EmployeeDetails> GetEmployeeDetails(int id)
         {
             return await emplyeeDetailsRepository.GetEmployeeDetailsById(id);
         }
 
         [HttpPost("updateEmployeeDetails")]
 
-        public async Task<Boolean>updateEmployeeDetails(EmployeeDetails employeeDetails)
+        public async Task<Boolean> updateEmployeeDetails(EmployeeDetails employeeDetails)
         {
             return await emplyeeDetailsRepository.UpdateEmployeeDetails(employeeDetails);
         }
@@ -74,6 +81,31 @@ namespace First_Project.Controllers
         {
             return await emplyeeDetailsRepository.getDataFromMobileNo(contactno);
         }
-    }
+        //[HttpGet("GetAllDataOfEmployee/{id}")]
+
+        //public async Task<AllData> GetAllDataOfEmployee(int id)
+        //{
+        //    return await emplyeeDetailsRepository.Test(id);
+        //}
+
+        [HttpPost("sendMail")]
+
+        public async Task<Boolean> SendMail(MailData mailData)
+        {
+            
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(mailData.From));
+            email.To.Add(MailboxAddress.Parse(mailData.To));
+            email.Body = new TextPart(TextFormat.Html) { Text = mailData.Body };
+            email.Subject = mailData.Subject;
+
+            var smtp = new SmtpClient();
+            smtp.Connect(configuration.GetValue<string>("SMTP:Host"), configuration.GetValue<int>("SMTP:Port"), MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate(configuration.GetValue<string>("SMTP:UserName"), configuration.GetValue<string>("SMTP:Password"));
+            smtp.Send(email);
+            smtp.Disconnect(true);
+            return true;
+        }
+    } 
     
 }

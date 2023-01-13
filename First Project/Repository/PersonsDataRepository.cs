@@ -64,7 +64,7 @@ namespace First_Project.Repository
             if(persons!=null)
             {
                 dBConnection.Remove(persons);
-                dBConnection.SaveChangesAsync();
+                //dBConnection.SaveChangesAsync();
             }
             return persons;
         }

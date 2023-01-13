@@ -9,5 +9,6 @@ namespace First_Project.IRepository
     public interface ICustomerDataRepository
     {
         Task<Boolean> addCoustomerData(CustomerData customerData);
+        Task<List<Gender>> GetGender();
     }
 }

@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Threading.Tasks;
 using First_Project.Data;
 using First_Project.IRepository;
+using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 
 namespace First_Project.Repository
 {
     public class CustomerDataRepository: ICustomerDataRepository
     {
         private readonly DBConnection dBConnection;
-
-        public CustomerDataRepository(DBConnection dBConnection)
+        private readonly IConfiguration configuration;
+        public CustomerDataRepository(DBConnection dBConnection, IConfiguration configuration)
         {
             this.dBConnection = dBConnection;
+            this.configuration = configuration;
         }
 
         public async Task<Boolean>addCoustomerData(CustomerData customerData)
@@ -35,13 +42,29 @@ namespace First_Project.Repository
             };
             await dBConnection.AddAsync(customerData1);
             await dBConnection.SaveChangesAsync();
-            return true;
+                var email1 = new MimeMessage();
+                email1.From.Add(MailboxAddress.Parse("manoj.gaikwad@sumasoft.net"));
+                email1.To.Add(MailboxAddress.Parse(customerData1.Email));
+                email1.Body = new TextPart(TextFormat.Html) { Text = "Welcome" + " " + customerData1.FirstName + " " + customerData1.LastName + "<br>" + "Thanks For selecting ShopKart" };
+                email1.Subject = "ShopKart.com";
+
+                var smtp = new SmtpClient();
+                smtp.Connect(configuration.GetValue<string>("SMTP:Host"), configuration.GetValue<int>("SMTP:Port"), MailKit.Security.SecureSocketOptions.StartTls);
+                smtp.Authenticate(configuration.GetValue<string>("SMTP:UserName"), configuration.GetValue<string>("SMTP:Password"));
+                smtp.Send(email1);
+                smtp.Disconnect(true);
+                return true;
         }
             else
             {
                 return false;
             }
             
+        }
+
+        public async Task<List<Gender>> GetGender()
+        {
+            return await dBConnection.gender.ToListAsync();
         }
     }
 }

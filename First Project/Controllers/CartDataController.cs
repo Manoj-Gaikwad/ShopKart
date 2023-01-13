@@ -34,6 +34,12 @@ namespace First_Project.Controllers
             return await icartDataRepository.addCartData(cartData);
         }
 
+        [HttpGet("removeItem/{id}")]
+
+        public async Task<Boolean> removeItem(int id)
+        {
+            return await icartDataRepository.removeItem(id);
+        }
 
     }
 }

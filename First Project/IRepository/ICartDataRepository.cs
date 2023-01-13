@@ -10,5 +10,6 @@ namespace First_Project.IRepository
     {
         Task<List<CartData>> getAllCartData();
         Task<Boolean> addCartData(CartData cartData);
+        Task<Boolean> removeItem(int id);
     }
 }

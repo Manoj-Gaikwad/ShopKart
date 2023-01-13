@@ -64,7 +64,7 @@ namespace First_Project.Repository
             if (company != null)
             {
                 dBConnection.Remove(company);
-                dBConnection.SaveChangesAsync();
+                //dBConnection.SaveChangesAsync();
                
             }
             return company;

@@ -23,6 +23,24 @@ namespace First_Project.Repository
             return await dBConnection.cart.ToListAsync();
         }
 
+        public async Task<Boolean> removeItem(int id)
+        {
+            CartData data = await dBConnection.cart.SingleOrDefaultAsync(x => x.id == id);
+
+            if (data != null)
+            {
+                dBConnection.Remove(data);
+                await dBConnection.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+             
+        }
+       
+
         public async Task<Boolean>addCartData(CartData cartData)
         {
             if(cartData!=null)

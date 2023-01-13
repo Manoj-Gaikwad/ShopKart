@@ -17,7 +17,7 @@ namespace First_Project.IRepository
         Task<DepartmentData> get(int id);
         Task<List<Gender>> GetGender();
         Task<EmployeeDetails> getDataFromMobileNo(string contactno);
-
-
+        //Task<AllData> Test(int id);
+         
         }
 }
