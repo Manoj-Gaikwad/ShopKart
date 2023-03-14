@@ -4,14 +4,16 @@ using First_Project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace First_Project.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    partial class DBConnectionModelSnapshot : ModelSnapshot
+    [Migration("20230314100223_demo8")]
+    partial class demo8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -436,13 +438,13 @@ namespace First_Project.Migrations
                     b.Property<string>("ptype")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("scimage1")
+                    b.Property<string>("ssimage1")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("scimage2")
+                    b.Property<string>("ssimage2")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("scimage3")
+                    b.Property<string>("ssimage3")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("pid");
