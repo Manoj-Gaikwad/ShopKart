@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace First_Project.Data
 {
-    public class DBConnection : DbContext
+    public class DBConnection : IdentityDbContext<ApplicationUser>
     {
         public DBConnection(DbContextOptions<DBConnection> options) : base(options)
         {
@@ -25,6 +26,8 @@ namespace First_Project.Data
         // public DbSet<ProductsDetailsData> productsdetails { get; set; }
         public DbSet<CartData> cart { get; set; }
         public DbSet<CustomerData> customerdetails { get; set; }
+
+        public DbSet<CosmeticsData> cosmetic { get; set; }
 
 
     }

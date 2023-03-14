@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 using System.Threading.Tasks;
 using First_Project.Data;
@@ -10,10 +13,12 @@ using MimeKit;
 using MimeKit.Text;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace First_Project.Repository
 {
-    public class CustomerDataRepository: ICustomerDataRepository
+    public class CustomerDataRepository : ICustomerDataRepository
     {
         private readonly DBConnection dBConnection;
         private readonly IConfiguration configuration;
@@ -23,25 +28,28 @@ namespace First_Project.Repository
             this.configuration = configuration;
         }
 
-        public async Task<Boolean>addCoustomerData(CustomerData customerData)
+        public async Task<Boolean> addCoustomerData(CustomerData customerData)
         {
-            if(customerData!=null)
-            { 
-            CustomerData customerData1 = new CustomerData()
+            if (customerData != null)
             {
-                FirstName=customerData.FirstName,
-                LastName=customerData.LastName,
-                DOB=customerData.DOB,
-                Email=customerData.Email,
-                Gender=customerData.Gender,
-                Address=customerData.Address,
-                Pincode=customerData.Pincode,
-                ContactNo=customerData.ContactNo,
-                Password=customerData.Password,
-                CPassword=customerData.CPassword
-            };
-            await dBConnection.AddAsync(customerData1);
-            await dBConnection.SaveChangesAsync();
+                CustomerData customerData1 = new CustomerData()
+                {
+                    FirstName = customerData.FirstName,
+                    LastName = customerData.LastName,
+                    DOB = customerData.DOB,
+                    Email = customerData.Email,
+                    Gender = customerData.Gender,
+                    Address = customerData.Address,
+                    Pincode = customerData.Pincode,
+                    ContactNo = customerData.ContactNo,
+                    Password = customerData.Password,
+                    CPassword = customerData.CPassword
+                };
+                await dBConnection.AddAsync(customerData1);
+                await dBConnection.SaveChangesAsync();
+
+                //for email send to registered user
+
                 var email1 = new MimeMessage();
                 email1.From.Add(MailboxAddress.Parse("manoj.gaikwad@sumasoft.net"));
                 email1.To.Add(MailboxAddress.Parse(customerData1.Email));
@@ -54,17 +62,18 @@ namespace First_Project.Repository
                 smtp.Send(email1);
                 smtp.Disconnect(true);
                 return true;
-        }
+            }
             else
             {
                 return false;
             }
-            
         }
 
         public async Task<List<Gender>> GetGender()
         {
             return await dBConnection.gender.ToListAsync();
         }
+
+       
     }
 }

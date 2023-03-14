@@ -11,6 +11,7 @@ using MimeKit;
 using MimeKit.Text;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace First_Project.Controllers
 {
@@ -71,6 +72,7 @@ namespace First_Project.Controllers
             return await emplyeeDetailsRepository.get(id);
         }
         [HttpGet("getAllGender")]
+       // [Authorize]
         public async Task<List<Gender>> GetGender()
         {
             return await emplyeeDetailsRepository.GetGender();

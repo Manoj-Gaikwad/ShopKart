@@ -11,10 +11,11 @@ using System.Linq;
 
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using System.Data.Common;
 
 namespace First_Project.Repository
 {
-    public class SignInRepository: ISignInRepositiory
+    public class SignInRepository : ISignInRepositiory
     {
         private readonly DBConnection dBConnection;
         private readonly IConfiguration configuration;
@@ -25,23 +26,12 @@ namespace First_Project.Repository
 
         }
 
-        public async Task<Boolean>CheckValidEmployee(string email, string password)
+        public async Task<Boolean> CheckValidEmployee(string email, string password)
         {
-            var data=await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.Email == email && x.Password == password);
-            if(data!=null)
+            var data = await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.Email == email && x.Password == password);
+            if (data != null)
             {
-                var email1 = new MimeMessage();
-                email1.From.Add(MailboxAddress.Parse("manoj.gaikwad@sumasoft.net"));
-                email1.To.Add(MailboxAddress.Parse(email));
-                email1.Body = new TextPart(TextFormat.Html) { Text = "Welcome"+" "+data.FirstName +" "+data.LastName+"<br>"+"Thanks For selecting ShopKart" };
-                email1.Subject ="ShopKart.com";
 
-                var smtp = new SmtpClient();
-                smtp.Connect(configuration.GetValue<string>("SMTP:Host"), configuration.GetValue<int>("SMTP:Port"), MailKit.Security.SecureSocketOptions.StartTls);
-                smtp.Authenticate(configuration.GetValue<string>("SMTP:UserName"), configuration.GetValue<string>("SMTP:Password"));
-                smtp.Send(email1);
-                smtp.Disconnect(true);
-             
                 return true;
             }
             else
@@ -49,6 +39,36 @@ namespace First_Project.Repository
                 return false;
             }
 
+        }
+    
+
+    public async Task<LoginResponse> CheckValidEmployeeOrNot(string email, string password)
+    {
+        LoginResponse loginResponse = new LoginResponse();
+        var data = await dBConnection.employeeDetails.SingleOrDefaultAsync(x => x.Email == email && x.Password == password);
+        
+
+            return new LoginResponse
+            {
+                AuthToken = null,
+                RefreshToken = this.GenerateRefreshTokenAsync()
+            };
+        
+    } 
+
+    public string GenerateRefreshTokenAsync()
+        {
+            Random rand = new Random(Environment.TickCount);
+            List<char> chars = new List<char>();
+            string randomChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!_-";
+
+            for (int i = chars.Count; i < 20; i++)
+            {
+                char c = randomChars[rand.Next(0, randomChars.Length)];
+                chars.Add(c);
+            }
+            String refreshToken = new string(chars.ToArray());
+            return refreshToken;
         }
     }
 }
