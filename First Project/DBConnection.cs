@@ -29,6 +29,9 @@ namespace First_Project.Data
 
         public DbSet<CosmeticsData> cosmetic { get; set; }
 
+        public DbSet<ShoesData> shoes { get; set; }
+        public DbSet<ShoesAllData> subshoesimages { get; set; }
+
 
     }
 }

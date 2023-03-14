@@ -80,6 +80,7 @@ namespace First_Project
             services.AddTransient<ICartDataRepository, CartDataRepository>();
             services.AddTransient<ICustomerDataRepository, CustomerDataRepository>();
             services.AddTransient<ICosmeticsDetailsRepository, CosmeticsDetailsRepository>();
+            services.AddTransient<IShoesDetailsRepository, ShoesDetailsRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
 
 

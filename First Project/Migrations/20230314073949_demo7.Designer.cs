@@ -4,14 +4,16 @@ using First_Project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace First_Project.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    partial class DBConnectionModelSnapshot : ModelSnapshot
+    [Migration("20230314073949_demo7")]
+    partial class demo7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,45 +411,6 @@ namespace First_Project.Migrations
                     b.HasKey("personID");
 
                     b.ToTable("persons");
-                });
-
-            modelBuilder.Entity("First_Project.Data.ShoesAllData", b =>
-                {
-                    b.Property<int>("pid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("pcolor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pdes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pimage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("pprice")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ptype")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("scimage1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("scimage2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("scimage3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("pid");
-
-                    b.ToTable("subShoesData");
                 });
 
             modelBuilder.Entity("First_Project.Data.ShoesData", b =>
