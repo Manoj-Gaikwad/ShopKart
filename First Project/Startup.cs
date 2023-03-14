@@ -1,19 +1,23 @@
 using First_Project.Data;
 using First_Project.IRepository;
 using First_Project.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace First_Project
@@ -31,8 +35,43 @@ namespace First_Project
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("MasterConnString");
-            services.AddDbContext<DBConnection>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+            string connectionString = Configuration.GetConnectionString("ConnString");
+            services.AddDbContext<DBConnection>(options => options.UseSqlServer(connectionString));
+
+            //Identity
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<DBConnection>()
+            .AddDefaultTokenProviders();
+
+
+            //jwt tokens
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+             .AddJwtBearer(option =>
+             {
+                 option.SaveToken = true;
+                 option.RequireHttpsMetadata = false;
+                 option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                 {
+
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidIssuer = Configuration["Jwt:Issure"],
+                     ValidAudience = Configuration["Jwt:Audience"],
+                     IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                     
+                 };
+
+
+             });
+
+
+
             services.AddTransient<IEmplyeeDetailsRepository, EmployeeDetailsRepository>();
             services.AddTransient<IPersonsDataRepositiory,PersonsDataRepository>();
             services.AddTransient<ICompanyDataRepository, CompanyDataRepository>();
@@ -40,8 +79,10 @@ namespace First_Project
             services.AddTransient<IClothsDetailsRepository, ClothsDetailsRepository>();
             services.AddTransient<ICartDataRepository, CartDataRepository>();
             services.AddTransient<ICustomerDataRepository, CustomerDataRepository>();
-            
-          
+            services.AddTransient<ICosmeticsDetailsRepository, CosmeticsDetailsRepository>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
+
+
 
             services.AddControllers();
 
@@ -52,7 +93,7 @@ namespace First_Project
          ));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "First_Project", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SHOPKARTAPI", Version = "v1" });
             });
         }
 
@@ -71,7 +112,9 @@ namespace First_Project
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+           
 
            
 

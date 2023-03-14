@@ -13,6 +13,7 @@ namespace First_Project.Controllers
     [ApiController]
     public class ClothsDetailsController : ControllerBase
     {
+
         private readonly IClothsDetailsRepository iclothsDetailsRepository;
 
         public ClothsDetailsController(IClothsDetailsRepository iclothsDetailsRepository)
