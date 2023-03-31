@@ -1,6 +1,8 @@
 ﻿using First_Project.Data;
 using First_Project.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -17,25 +19,24 @@ using System.Threading.Tasks;
 
 namespace First_Project.Repository
 {
-    public class AccountRepository: IAccountRepository
+    public class AccountRepository : IAccountRepository
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser>_signInManager;
+        private readonly DBConnection dBConnection;
         private readonly IConfiguration _iconfiguration;
 
-        public AccountRepository(
-            UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            IConfiguration iconfiguration)
+        public AccountRepository(DBConnection dBConnection, IConfiguration _iconfiguration)
         {
-            this._userManager = userManager;
-            this._signInManager = signInManager;
-            this._iconfiguration = iconfiguration;
+            this.dBConnection = dBConnection;
+            this._iconfiguration = _iconfiguration;
         }
 
-        public async Task<IdentityResult> SignUpAsync(SignUp signUp)
+
+        public async Task<Boolean> SignUpAsync(SignUp signUp)
         {
-            var User = new ApplicationUser()
+            var Role = "user";
+            var User = new Users()
             {
+                CId = null,
                 FirstName = signUp.FirstName,
                 LastName = signUp.LastName,
                 DOB = signUp.DOB,
@@ -44,38 +45,56 @@ namespace First_Project.Repository
                 Address = signUp.Address,
                 Pincode = signUp.Pincode,
                 ContactNo = signUp.ContactNo,
-                UserName = signUp.Email,
-                Password=signUp.Password,
-                CPassword=signUp.CPassword
+                Password = signUp.Password,
+                CPassword = signUp.CPassword,
+                Role = Role
             };
-          return  await _userManager.CreateAsync(User, signUp.Password);
+            await dBConnection.AddAsync(User);
+            await dBConnection.SaveChangesAsync();
+            return true;
         }
-
-        public async Task<string>SignIn(SignIn signIn)
+        [AllowAnonymous]
+        public  async Task<object> SignIn(SignIn signIn)
         {
-            var result = await _signInManager.PasswordSignInAsync(signIn.Email, signIn.Password,false,false);
 
-            if(!result.Succeeded)
+            var user = Authenticate(signIn);
+
+                var token = Generate(user);
+            Response r1 = new Response();
+            r1.Output = token;
+            r1.message = "Success";
+            return r1;
+            
+        }
+        [AllowAnonymous]
+        private string Generate(Users user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_iconfiguration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
             {
-                return null;
-            }
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name,signIn.Email),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Email),
+                new Claim(ClaimTypes.Name, user.FirstName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
             };
-        var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_iconfiguration["Jwt:Key"]));
 
             var token = new JwtSecurityToken(
-                issuer: _iconfiguration["Jwt:Issure"],
-                audience: _iconfiguration["Jwt:Audience"],
-                expires: DateTime.Now.AddDays(1),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
-                ) ;
+                _iconfiguration["Jwt:Issuer"],
+                _iconfiguration["Jwt:Audience"],
+              claims,
+              expires: DateTime.Now.AddMinutes(15),
+              signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        [AllowAnonymous]
+        private Users Authenticate(SignIn signIn)
+        {
+            var currentUser = dBConnection.users.FirstOrDefault(o => o.Email.ToLower() == signIn.Email.ToLower() && o.Password == signIn.Password);
 
+            return currentUser;
+        }
     }
 }

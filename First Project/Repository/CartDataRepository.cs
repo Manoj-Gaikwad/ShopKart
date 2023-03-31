@@ -54,6 +54,7 @@ namespace First_Project.Repository
                     pcolor = cartData.pcolor,
                     pquantity = cartData.pquantity,
                     pprice = cartData.pprice,
+                    newprice=cartData.newprice,
                     pimage = cartData.pimage
                 };
                 await dBConnection.AddAsync(cart);
@@ -65,6 +66,33 @@ namespace First_Project.Repository
                 return false;
             };
         }
-    
+
+
+
+        public async Task<Boolean> updateCartData(CartData cartData)
+        {
+            CartData cartData1 = await dBConnection.cart.SingleOrDefaultAsync(x => x.id == cartData.id);
+
+            if (cartData1 != null)
+            {
+                cartData1.pid = cartData.pid;
+                cartData1.ptype = cartData.pname;
+                cartData1.pname = cartData.pname;
+                cartData1.psize = cartData.psize;
+                cartData1.pcolor = cartData.pcolor;
+                cartData1.pquantity = cartData.pquantity;
+                cartData1.pprice = cartData.pprice;
+                cartData1.newprice = cartData.newprice;
+                cartData1.pimage = cartData.pimage;
+
+                await dBConnection.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            };
+        }
+        
     }
 }

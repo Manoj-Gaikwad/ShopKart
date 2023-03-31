@@ -41,5 +41,12 @@ namespace First_Project.Controllers
             return await icartDataRepository.removeItem(id);
         }
 
+        [HttpPost("updateCart")]
+
+        public async Task<Boolean> updateCartData(CartData cartData)
+        {
+            return await icartDataRepository.updateCartData(cartData);
+        }
+
     }
 }

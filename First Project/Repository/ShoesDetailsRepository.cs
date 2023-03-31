@@ -21,6 +21,8 @@ namespace First_Project.Repository
             return await _dBConnection.shoes.ToListAsync();
         }
 
+
+
         public async Task<List<ShoesAllData>>getShoesAllDAta()
         {
             var data = await (from shoes in _dBConnection.shoes
@@ -35,6 +37,8 @@ namespace First_Project.Repository
                            pprice = shoes.pprice,
                            pcolor = shoes.pcolor,
                            pdes = shoes.pdes,
+                           psize=shoes.psize,
+                           pquantity=shoes.pquantity,
                            pimage = shoes.pimage,
                            scimage1 = subShoes.scimage1,
                            scimage2 = subShoes.scimage2,
