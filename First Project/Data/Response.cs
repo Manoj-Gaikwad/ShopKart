@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace First_Project.Data
 {
-    public class Tokens
+    public class Response
     {
-        public string Token { get; set; }
-        public string RefreshToken { get; set; }
+        public object Output { get; set; }
+        public object message { get; set; }
     }
 }

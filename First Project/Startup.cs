@@ -38,44 +38,26 @@ namespace First_Project
             string connectionString = Configuration.GetConnectionString("ConnString");
             services.AddDbContext<DBConnection>(options => options.UseSqlServer(connectionString));
 
-            //Identity
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<DBConnection>()
-            .AddDefaultTokenProviders();
 
-
-            //jwt tokens
-            services.AddAuthentication(option =>
-            {
-                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-
-             .AddJwtBearer(option =>
-             {
-                 option.SaveToken = true;
-                 option.RequireHttpsMetadata = false;
-                 option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                 {
-
-                     ValidateIssuer = true,
-                     ValidateAudience = true,
-                     ValidIssuer = Configuration["Jwt:Issure"],
-                     ValidAudience = Configuration["Jwt:Audience"],
-                     IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                     
-                 };
-
-
-             });
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
 
 
 
             services.AddTransient<IEmplyeeDetailsRepository, EmployeeDetailsRepository>();
             services.AddTransient<IPersonsDataRepositiory,PersonsDataRepository>();
             services.AddTransient<ICompanyDataRepository, CompanyDataRepository>();
-            services.AddTransient<ISignInRepositiory, SignInRepository>();
             services.AddTransient<IClothsDetailsRepository, ClothsDetailsRepository>();
             services.AddTransient<ICartDataRepository, CartDataRepository>();
             services.AddTransient<ICustomerDataRepository, CustomerDataRepository>();

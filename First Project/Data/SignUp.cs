@@ -7,7 +7,7 @@ namespace First_Project.Data
 {
     public class SignUp
     {
-
+        public int? CId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? DOB { get; set; }
@@ -18,6 +18,7 @@ namespace First_Project.Data
         public string? ContactNo { get; set; }
         public string? Password { get; set; }
         public string? CPassword { get; set; }
+        public string? Role { get; set; }
     }
 
 }

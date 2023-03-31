@@ -21,10 +21,15 @@ namespace First_Project.Controllers
             this.iclothsDetailsRepository = iclothsDetailsRepository;
         }
 
-        [HttpGet("getClothsDeta")]
+        [HttpGet("getClothsData")]
         public async Task<List<ClothsData>> getAllClothsDeta()
         {
             return await iclothsDetailsRepository.getAllCloths();
+        }
+        [HttpPost("AddClothsData")]
+        public async Task<Object> addClothsData(ClothsAllData clothsData)
+        {
+            return await iclothsDetailsRepository.addClothsData(clothsData);
         }
         [HttpGet("getAllClothsData")]
         public async Task<List<ClothsAllData>> getAllClothsData()

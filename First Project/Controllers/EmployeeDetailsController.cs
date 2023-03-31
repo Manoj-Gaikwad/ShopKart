@@ -72,7 +72,7 @@ namespace First_Project.Controllers
             return await emplyeeDetailsRepository.get(id);
         }
         [HttpGet("getAllGender")]
-       // [Authorize]
+       [Authorize (Roles = "admin")]
         public async Task<List<Gender>> GetGender()
         {
             return await emplyeeDetailsRepository.GetGender();

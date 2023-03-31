@@ -4,9 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace First_Project.Controllers
@@ -16,27 +21,34 @@ namespace First_Project.Controllers
    
     public class AccountController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepository;
+        private readonly IAccountRepository _iaccountRepository;
+        private IConfiguration _config;
+        private readonly DBConnection dBConnection;
 
-        public AccountController(IAccountRepository _iaccountRepository)
+        public AccountController(IAccountRepository _iaccountRepository, IConfiguration config, DBConnection dBConnection)
         {
-            this._accountRepository = _iaccountRepository;
+            this._iaccountRepository = _iaccountRepository;
+            _config = config;
+            this.dBConnection = dBConnection;
         }
 
         [HttpPost("SignUpUser")]
 
-        public Task<IdentityResult>SignUpUser([FromBody]SignUp signUp)
+        public Task<Boolean>SignUpUser([FromBody]SignUp signUp)
         {
-                var result =_accountRepository.SignUpAsync(signUp);
+                var result =_iaccountRepository.SignUpAsync(signUp);
                 return result;
         }
 
-        [HttpPost("SignIn")]
 
-        public Task<string> SignIn([FromBody] SignIn signIn)
+        [AllowAnonymous]
+        [HttpGet("SignIn")]
+        public object SignIn([FromBody] SignIn signIn)
         {
-            var result = _accountRepository.SignIn(signIn);
-            return result;
+             var result = _iaccountRepository.SignIn(signIn);
+                return result;
         }
+      
+
     }
 }

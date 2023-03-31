@@ -17,6 +17,7 @@ namespace First_Project.Data
         public string pcolor { get; set; }
         public int pquantity { get; set; }
         public int pprice { get; set; }
+        public int newprice { get; set; }
         public string pimage { get; set; }
         
     }

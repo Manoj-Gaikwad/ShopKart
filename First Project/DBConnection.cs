@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace First_Project.Data
 {
-    public class DBConnection : IdentityDbContext<ApplicationUser>
+    public class DBConnection :DbContext
     {
         public DBConnection(DbContextOptions<DBConnection> options) : base(options)
         {
@@ -31,6 +31,8 @@ namespace First_Project.Data
 
         public DbSet<ShoesData> shoes { get; set; }
         public DbSet<ShoesAllData> subshoesimages { get; set; }
+
+        public DbSet<Users> users { get; set; }
 
 
     }
