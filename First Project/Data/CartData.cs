@@ -10,6 +10,7 @@ namespace First_Project.Data
     {
         [Key]
         public int id { get; set; }
+        public int cid { get; set; }
         public int pid { get; set; }
         public string ptype { get; set; }
         public string pname { get; set; }
