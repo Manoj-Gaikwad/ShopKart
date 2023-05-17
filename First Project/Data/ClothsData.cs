@@ -11,6 +11,7 @@ namespace First_Project.Data
         [Key]
         public int pid { get; set; }
         public string ptype { get; set; }
+        public string pstype { get; set; }
         public string pname { get; set; }
         public int pprice { get; set; }
         public string pcolor { get; set; }
@@ -18,6 +19,9 @@ namespace First_Project.Data
         public string psize { get; set; }
         public int pquantity { get; set; }
         public string pimage { get; set; }
+        public string scimage1 { get; set; }
+        public string scimage2 { get; set; }
+        public string scimage3 { get; set; }
     }
 
 }

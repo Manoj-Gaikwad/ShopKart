@@ -74,6 +74,17 @@ namespace First_Project.Repository
             return await dBConnection.gender.ToListAsync();
         }
 
-       
+        public async Task<Response> getcustomerbyId(SignIn signin)
+        {
+            CustomerData customerData = await dBConnection.customerdetails.SingleOrDefaultAsync(x => x.Email == signin.Email && x.CPassword == signin.Password);
+            Response response = new Response()
+            {
+                message = "success",
+            };
+            return response;
+        }
+           
+
+
     }
 }

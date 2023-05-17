@@ -10,5 +10,6 @@ namespace First_Project.IRepository
     {
         Task<List<ShoesData>> GetShoesData();
         Task<List<ShoesAllData>> getShoesAllDAta();
+        Task<Object> addShoesData(ShoesData shoesData);
     }
 }

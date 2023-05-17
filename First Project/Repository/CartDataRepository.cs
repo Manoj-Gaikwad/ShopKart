@@ -18,9 +18,9 @@ namespace First_Project.Repository
         }
 
 
-        public async Task<List<CartData>>getAllCartData()
+        public async Task<List<CartData>>getAllCartData(int id)
         {
-            return await dBConnection.cart.ToListAsync();
+            return await dBConnection.cart.Where(x => x.cid == id).ToListAsync();
         }
 
         public async Task<Boolean> removeItem(int id)
@@ -47,8 +47,9 @@ namespace First_Project.Repository
             {
                 CartData cart = new CartData()
                 {
+                    cid=cartData.cid,
                     pid = cartData.pid,
-                    ptype = cartData.pname,
+                    ptype = cartData.ptype,
                     pname = cartData.pname,
                     psize = cartData.psize,
                     pcolor = cartData.pcolor,
@@ -76,7 +77,7 @@ namespace First_Project.Repository
             if (cartData1 != null)
             {
                 cartData1.pid = cartData.pid;
-                cartData1.ptype = cartData.pname;
+                cartData1.ptype = cartData.ptype;
                 cartData1.pname = cartData.pname;
                 cartData1.psize = cartData.psize;
                 cartData1.pcolor = cartData.pcolor;

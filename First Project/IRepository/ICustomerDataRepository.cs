@@ -10,5 +10,6 @@ namespace First_Project.IRepository
     {
         Task<Boolean> addCoustomerData(CustomerData customerData);
         Task<List<Gender>> GetGender();
+        Task<Response> getcustomerbyId(SignIn signin);
     }
 }

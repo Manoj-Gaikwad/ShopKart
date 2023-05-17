@@ -21,11 +21,12 @@ namespace First_Project.Controllers
             this.icartDataRepository = icartDataRepository;
         }
 
-        [HttpGet("getAllCartData")]
+        [HttpGet("getAllCartData/{id}")]
 
-        public async Task<List<CartData>>getAllCartData()
+        public async Task<List<CartData>>getAllCartData(int id)
+        
         {
-            return await icartDataRepository.getAllCartData();
+            return await icartDataRepository.getAllCartData(id);
         }
         [HttpPost("addCartData")]
 
