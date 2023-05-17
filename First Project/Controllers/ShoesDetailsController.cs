@@ -31,5 +31,11 @@ namespace First_Project.Controllers
         {
             return await _shoesDetailsRepository.getShoesAllDAta();
         }
+
+        [HttpPost("addShoesData")]
+       public async Task<Object> addShoesData(ShoesData shoesData)
+        {
+            return await _shoesDetailsRepository.addShoesData(shoesData);
+        }
     }
 }

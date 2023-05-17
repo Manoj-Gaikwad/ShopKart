@@ -42,7 +42,7 @@ namespace First_Project.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet("SignIn")]
+        [HttpPost("SignIn")]
         public object SignIn([FromBody] SignIn signIn)
         {
              var result = _iaccountRepository.SignIn(signIn);

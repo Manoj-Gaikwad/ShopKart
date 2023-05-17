@@ -11,10 +11,12 @@ namespace First_Project.Data
         [Key]
         public int pid { get; set; }
         public string ptype { get; set; }
+        public string pstype { get; set; }
         public string pname { get; set; }
         public int pprice { get; set; }
         public string pcolor { get; set; }
         public string pdes { get; set; }
+        public int pquantity { get; set; }
         public string pimage { get; set; }
     }
 }

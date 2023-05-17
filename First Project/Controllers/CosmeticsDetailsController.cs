@@ -26,5 +26,10 @@ namespace First_Project.Controllers
         {
             return await icosmeticsDetailsRepositor.GetCosmeticsData();
         }
+        [HttpPost("addCosmeticsData")]
+        public async Task<Object> addCosmeticsData(CosmeticsData cosmeticsData)
+        {
+            return icosmeticsDetailsRepositor.addCosmeticsData(cosmeticsData);
+        }
     }
 }

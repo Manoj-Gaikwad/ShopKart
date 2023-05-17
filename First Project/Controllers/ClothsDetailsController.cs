@@ -27,12 +27,12 @@ namespace First_Project.Controllers
             return await iclothsDetailsRepository.getAllCloths();
         }
         [HttpPost("AddClothsData")]
-        public async Task<Object> addClothsData(ClothsAllData clothsData)
+        public async Task<Object> addClothsData(ClothsData clothsData)
         {
             return await iclothsDetailsRepository.addClothsData(clothsData);
         }
         [HttpGet("getAllClothsData")]
-        public async Task<List<ClothsAllData>> getAllClothsData()
+        public async Task<List<ClothsData>> getAllClothsData()
         {
             return await iclothsDetailsRepository.getAllClothsData();
         }

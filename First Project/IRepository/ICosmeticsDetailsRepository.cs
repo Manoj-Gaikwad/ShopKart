@@ -9,5 +9,6 @@ namespace First_Project.IRepository
     public interface ICosmeticsDetailsRepository
     {
         Task<List<CosmeticsData>> GetCosmeticsData();
+        Task<Object> addCosmeticsData(CosmeticsData cosmeticsData);
     }
 }

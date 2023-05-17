@@ -21,13 +21,14 @@ namespace First_Project.Repository
             return await dBConnection.cloths.ToListAsync();
         }
 
-        public async Task<Object>addClothsData(ClothsAllData clothsData)
+        public async Task<Object>addClothsData(ClothsData clothsData)
         {
             if(clothsData!=null)
             {
-                ClothsAllData clothsData1 = new ClothsAllData()
+                ClothsData clothsData1 = new ClothsData()
                 {
                     ptype = clothsData.ptype,
+                    pstype= clothsData.pstype,
                     pname = clothsData.pname,
                     pprice = clothsData.pprice,
                     pcolor = clothsData.pcolor,
@@ -49,16 +50,14 @@ namespace First_Project.Repository
 
             return r1;
         }
-        public async Task<List<ClothsAllData>> getAllClothsData()
+        public async Task<List<ClothsData>> getAllClothsData()
         {
             var data = await (from cloths in dBConnection.cloths
-                              join subimage in dBConnection.subclothimages
-                              on cloths.pid equals subimage.pid
-                              where cloths.pid == subimage.pid
-                              select new ClothsAllData()
+                              select new ClothsData()
                               {
                                   pid = cloths.pid,
                                   ptype = cloths.ptype,
+                                  pstype=cloths.pstype,
                                   pname = cloths.pname,
                                   pprice = cloths.pprice,
                                   pcolor = cloths.pcolor,
@@ -66,9 +65,9 @@ namespace First_Project.Repository
                                   psize=cloths.psize,
                                   pquantity=cloths.pquantity,
                                   pimage = cloths.pimage,
-                                  scimage1=subimage.scimage1,
-                                  scimage2 = subimage.scimage2,
-                                  scimage3 = subimage.scimage3
+                                  scimage1= cloths.scimage1,
+                                  scimage2 = cloths.scimage2,
+                                  scimage3 = cloths.scimage3
 
                               }).ToListAsync();
             return data;

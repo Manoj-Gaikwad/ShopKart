@@ -21,18 +21,42 @@ namespace First_Project.Repository
             return await _dBConnection.shoes.ToListAsync();
         }
 
+        public async Task<Object> addShoesData(ShoesData shoesData)
+        {
+            ShoesData d1 = new ShoesData()
+            {
+                ptype = shoesData.ptype,
+                pstype = shoesData.pstype,
+                pname = shoesData.pname,
+                pprice = shoesData.pprice,
+                pcolor = shoesData.pcolor,
+                pdes = shoesData.pdes,
+                psize = shoesData.psize,
+                pquantity = shoesData.pquantity,
+                pimage = shoesData.pimage,
+                scimage1 = shoesData.scimage1,
+                scimage2 = shoesData.scimage2,
+                scimage3 = shoesData.scimage3
+            };
+            await _dBConnection.AddAsync(d1);
+            await _dBConnection.SaveChangesAsync();
+
+            Response r1 = new Response()
+            {
+                message = "success"
+            };
+            return r1;
+        }
 
 
         public async Task<List<ShoesAllData>>getShoesAllDAta()
         {
             var data = await (from shoes in _dBConnection.shoes
-                       join subShoes in _dBConnection.subshoesimages
-                        on shoes.pid equals subShoes.pid
-                       where shoes.pid == subShoes.pid
                        select new ShoesAllData()
                        {
                            pid = shoes.pid,
                            ptype = shoes.ptype,
+                           pstype = shoes.pstype,
                            pname = shoes.pname,
                            pprice = shoes.pprice,
                            pcolor = shoes.pcolor,
@@ -40,9 +64,9 @@ namespace First_Project.Repository
                            psize=shoes.psize,
                            pquantity=shoes.pquantity,
                            pimage = shoes.pimage,
-                           scimage1 = subShoes.scimage1,
-                           scimage2 = subShoes.scimage2,
-                           scimage3 = subShoes.scimage3
+                           scimage1 = shoes.scimage1,
+                           scimage2 = shoes.scimage2,
+                           scimage3 = shoes.scimage3
                        }).ToListAsync();
             return data;
         }

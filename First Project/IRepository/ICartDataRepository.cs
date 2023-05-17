@@ -8,7 +8,7 @@ namespace First_Project.IRepository
 {
     public interface ICartDataRepository
     {
-        Task<List<CartData>> getAllCartData();
+        Task<List<CartData>> getAllCartData(int id);
         Task<Boolean> addCartData(CartData cartData);
         Task<Boolean> removeItem(int id);
         Task<Boolean> updateCartData(CartData cartData);

@@ -61,7 +61,7 @@ namespace First_Project.Repository
 
                 var token = Generate(user);
             Response r1 = new Response();
-            r1.Output = token;
+            r1.Output = user;
             r1.message = "Success";
             return r1;
             

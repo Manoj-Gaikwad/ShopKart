@@ -31,5 +31,11 @@ namespace First_Project.Controllers
         {
             return await icustomerDataRepository.GetGender();
         }
+        [HttpPost("getcustomerbyId")]
+        public async Task<Response> getcustomerbyId(SignIn signin)
+        {
+            return await icustomerDataRepository.getcustomerbyId(signin);
+        }
+
     }
 }
