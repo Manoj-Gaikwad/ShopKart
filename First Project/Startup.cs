@@ -24,7 +24,7 @@ namespace First_Project
 {
     public class Startup
     {
-        private readonly string HRMSPolicy = "HRMSPolicy";
+        private readonly string ShopKartPolicy = "ShopKart";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -69,14 +69,14 @@ namespace First_Project
 
             services.AddControllers();
 
-            services.AddCors(options => options.AddPolicy(name: HRMSPolicy, p => p
+            services.AddCors(options => options.AddPolicy(name: ShopKartPolicy, p => p
             .AllowAnyOrigin()
              .AllowAnyMethod()
              .AllowAnyHeader()
          ));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SHOPKARTAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShopKart", Version = "v1" });
             });
         }
 
@@ -89,7 +89,7 @@ namespace First_Project
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "First_Project v1"));
             }
-            app.UseCors(HRMSPolicy);
+            app.UseCors(ShopKartPolicy);
 
             app.UseHttpsRedirection();
 
