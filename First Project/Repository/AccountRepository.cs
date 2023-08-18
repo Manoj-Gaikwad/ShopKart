@@ -1,10 +1,13 @@
 ﻿using First_Project.Data;
 using First_Project.IRepository;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using MimeKit.Text;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -47,47 +50,77 @@ namespace First_Project.Repository
                 ContactNo = signUp.ContactNo,
                 Password = signUp.Password,
                 CPassword = signUp.CPassword,
-                Role = Role
+                Roles = Role
             };
             await dBConnection.AddAsync(User);
             await dBConnection.SaveChangesAsync();
+
+            var email1 = new MimeMessage();
+            email1.From.Add(MailboxAddress.Parse("manoj.gaikwad@sumasoft.net"));
+            email1.To.Add(MailboxAddress.Parse(User.Email));
+            email1.Body = new TextPart(TextFormat.Html) { Text = "Welcome" + " " + User.FirstName + " " + User.LastName + "<br>" + "Thanks For selecting ShopKart" };
+            email1.Subject = "ShopKart.com";
+
+            var smtp = new SmtpClient();
+            smtp.Connect(_iconfiguration.GetValue<string>("SMTP:Host"), _iconfiguration.GetValue<int>("SMTP:Port"), MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate(_iconfiguration.GetValue<string>("SMTP:UserName"), _iconfiguration.GetValue<string>("SMTP:Password"));
+            smtp.Send(email1);
+            smtp.Disconnect(true);
             return true;
         }
         [AllowAnonymous]
         public  async Task<object> SignIn(SignIn signIn)
         {
-
             var user = Authenticate(signIn);
-
-                var token = Generate(user);
             Response r1 = new Response();
-            r1.Output = user;
-            r1.message = "Success";
-            return r1;
-            
-        }
+
+            if (user == null)
+            {
+                r1.Output = "Error";
+                r1.message = "Error";
+                return r1;
+            }
+         
+                var token = Generate(user);
+
+                //for cheking token is made properly or not for particular user
+                var handler = new JwtSecurityTokenHandler();
+                var jwtSecurityToken = handler.ReadJwtToken(token);
+                var data = jwtSecurityToken;
+
+                r1.Output = user;
+                r1.message = "Success";
+                return r1;
+            }
         [AllowAnonymous]
         private string Generate(Users user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_iconfiguration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            if(user!=null)
+            {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Email),
                 new Claim(ClaimTypes.Name, user.FirstName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Roles)
             };
 
             var token = new JwtSecurityToken(
-                _iconfiguration["Jwt:Issuer"],
-                _iconfiguration["Jwt:Audience"],
-              claims,
+              _iconfiguration["Jwt:Issuer"],
+              _iconfiguration["Jwt:Audience"],
+              claims:claims,
               expires: DateTime.Now.AddMinutes(15),
               signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+              return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            else
+            {
+                return "Error";
+            }
+            
         }
         [AllowAnonymous]
         private Users Authenticate(SignIn signIn)

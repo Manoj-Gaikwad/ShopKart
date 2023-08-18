@@ -24,7 +24,7 @@ namespace First_Project
 {
     public class Startup
     {
-        private readonly string ShopKartPolicy = "ShopKart";
+        private readonly string ShopKartPolicy = "admin";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,9 +38,16 @@ namespace First_Project
             string connectionString = Configuration.GetConnectionString("ConnString");
             services.AddDbContext<DBConnection>(options => options.UseSqlServer(connectionString));
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
+                    options.RequireHttpsMetadata = false; // Set to true in production
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
@@ -52,8 +59,18 @@ namespace First_Project
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                     };
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("admin", policy =>
+                    policy.RequireRole("admin"));
+            });
 
-
+            services.AddHttpClient("RazerPay", c =>
+            {
+                c.BaseAddress = new Uri("https://api.razerpay.com/v1/"); // Replace with the appropriate base URL
+                c.DefaultRequestHeaders.Add("MerchantId", "MAQ53v6n9xW6hA"); // Replace with your Merchant ID
+                c.DefaultRequestHeaders.Add("Authorization", "WoAkzG1B13nKOnWYO0s6sJQa"); // Replace with your Secret Key
+            });
 
             services.AddTransient<IEmplyeeDetailsRepository, EmployeeDetailsRepository>();
             services.AddTransient<IPersonsDataRepositiory,PersonsDataRepository>();
@@ -64,7 +81,7 @@ namespace First_Project
             services.AddTransient<ICosmeticsDetailsRepository, CosmeticsDetailsRepository>();
             services.AddTransient<IShoesDetailsRepository, ShoesDetailsRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
-
+            services.AddTransient<IPaymentDetailsRepository, PaymentDetailsRepository>();
 
 
             services.AddControllers();
@@ -94,6 +111,7 @@ namespace First_Project
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
 
             app.UseAuthentication();
             app.UseAuthorization();

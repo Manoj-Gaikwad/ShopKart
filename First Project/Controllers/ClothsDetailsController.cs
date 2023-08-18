@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using First_Project.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace First_Project.Controllers
 {
@@ -13,15 +14,14 @@ namespace First_Project.Controllers
     [ApiController]
     public class ClothsDetailsController : ControllerBase
     {
-
         private readonly IClothsDetailsRepository iclothsDetailsRepository;
-
         public ClothsDetailsController(IClothsDetailsRepository iclothsDetailsRepository)
         {
             this.iclothsDetailsRepository = iclothsDetailsRepository;
         }
 
         [HttpGet("getClothsData")]
+        //[Authorize(Roles  = "admin")]
         public async Task<List<ClothsData>> getAllClothsDeta()
         {
             return await iclothsDetailsRepository.getAllCloths();
@@ -36,7 +36,5 @@ namespace First_Project.Controllers
         {
             return await iclothsDetailsRepository.getAllClothsData();
         }
-
-
     }
 }

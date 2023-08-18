@@ -8,8 +8,8 @@ namespace First_Project
 {
     public enum Role
     {
-        Admin,
-        User
+        admin,
+        user
     }
     public class RoleRequirement : IAuthorizationRequirement
     {
