@@ -18,7 +18,7 @@ namespace First_Project.Repository
         }
         public async Task<List<ShoesData>> GetShoesData()
         {
-            return await _dBConnection.shoes.ToListAsync();
+            return await _dBConnection.shoes.OrderByDescending(x => x.pid).ToListAsync();
         }
 
         public async Task<Object> addShoesData(ShoesData shoesData)
@@ -67,7 +67,7 @@ namespace First_Project.Repository
                            scimage1 = shoes.scimage1,
                            scimage2 = shoes.scimage2,
                            scimage3 = shoes.scimage3
-                       }).ToListAsync();
+                       }).OrderByDescending(x=>x.pid).ToListAsync();
             return data;
         }
     }

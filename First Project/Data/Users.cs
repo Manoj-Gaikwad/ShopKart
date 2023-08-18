@@ -20,7 +20,7 @@ namespace First_Project.Data
         public string? ContactNo { get; set; }
         public string? Password { get; set; }
         public string? CPassword { get; set; }
-        public string? Role { get; set; }
+        public string? Roles { get; set; }
 
     }
 }

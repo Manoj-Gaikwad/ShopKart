@@ -1,5 +1,6 @@
 ﻿using First_Project.Data;
 using First_Project.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace First_Project.Repository
         {
             this.dBConnection = dBConnection;
         }
+        //[Authorize(Roles="admin")]
         public async Task<List<ClothsData>> getAllCloths()
         {
             return await dBConnection.cloths.ToListAsync();
@@ -39,7 +41,6 @@ namespace First_Project.Repository
                     scimage1=clothsData.scimage1,
                     scimage2=clothsData.scimage2,
                     scimage3=clothsData.scimage3
-                    
                 };
                 await dBConnection.AddAsync(clothsData1);
                 await dBConnection.SaveChangesAsync();

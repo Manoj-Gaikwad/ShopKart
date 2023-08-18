@@ -36,7 +36,6 @@ namespace First_Project.Repository
                 pdes=cosmeticsData.pdes,
                 pquantity=cosmeticsData.pquantity,
                 pimage=cosmeticsData.pimage
-
             };
 
             await dbconnection.AddAsync(c1);
