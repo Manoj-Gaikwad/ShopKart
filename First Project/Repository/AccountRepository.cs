@@ -1,6 +1,6 @@
 ﻿using First_Project.Data;
 using First_Project.IRepository;
-using MailKit.Net.Smtp;
+//using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +16,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Mail;
 
 
 
@@ -55,43 +57,80 @@ namespace First_Project.Repository
             await dBConnection.AddAsync(User);
             await dBConnection.SaveChangesAsync();
 
-            var email1 = new MimeMessage();
-            email1.From.Add(MailboxAddress.Parse("manoj.gaikwad@sumasoft.net"));
-            email1.To.Add(MailboxAddress.Parse(User.Email));
-            email1.Body = new TextPart(TextFormat.Html) { Text = "Welcome" + " " + User.FirstName + " " + User.LastName + "<br>" + "Thanks For selecting ShopKart" };
-            email1.Subject = "ShopKart.com";
 
-            var smtp = new SmtpClient();
-            smtp.Connect(_iconfiguration.GetValue<string>("SMTP:Host"), _iconfiguration.GetValue<int>("SMTP:Port"), MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate(_iconfiguration.GetValue<string>("SMTP:UserName"), _iconfiguration.GetValue<string>("SMTP:Password"));
-            smtp.Send(email1);
-            smtp.Disconnect(true);
+            //Pages Permissions Assigning
+           
+                UserPermissions up = new UserPermissions();
+                up.CId = User.CId;
+                up.Email = User.Email;
+                up.Pages = "Home,About,Contact";
+
+                await dBConnection.AddAsync(up);
+                await dBConnection.SaveChangesAsync();
+
+            //send gmail message
+
+            string fromEmail = _iconfiguration.GetValue<string>("SMTP:UserName");
+            string fromPassword = _iconfiguration.GetValue<string>("SMTP:Password");
+
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress(fromEmail);
+            message.Subject = "Thanks For Joining Us!!";
+            message.To.Add(new MailAddress(User.Email));
+            message.Body = $"<html><body>Welcome {User.FirstName} {User.LastName},<br> Thanks For selecting ShopKart... <body></html>";
+            message.IsBodyHtml = true;
+
+            var smtpClient = new SmtpClient(_iconfiguration.GetValue<string>("SMTP:Host"))
+            {
+                Port = _iconfiguration.GetValue<int>("SMTP:Port"),
+                Credentials = new NetworkCredential(fromEmail, fromPassword),
+                EnableSsl = _iconfiguration.GetValue<Boolean>("SMTP:EnableSsl")
+            };
+            smtpClient.Send(message);
             return true;
         }
         [AllowAnonymous]
-        public  async Task<object> SignIn(SignIn signIn)
+        public async Task<object> SignIn(SignIn signIn)
         {
             var user = Authenticate(signIn);
             Response r1 = new Response();
 
+
+
             if (user == null)
             {
                 r1.Output = "Error";
-                r1.message = "Error";
+                r1.message = "User Not Found";
                 return r1;
             }
-         
+            else
+            {
+               
+
                 var token = Generate(user);
+                if (token != null || token != "")
+                {
+                    var userPermission = UserPermissions(user.Email);
+                    //for cheking token is made properly or not for particular user
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtSecurityToken = handler.ReadJwtToken(token);
+                    var data = jwtSecurityToken;
 
-                //for cheking token is made properly or not for particular user
-                var handler = new JwtSecurityTokenHandler();
-                var jwtSecurityToken = handler.ReadJwtToken(token);
-                var data = jwtSecurityToken;
+                    r1.Output = user;
+                    r1.message = "Success";
+                    r1.Pages = userPermission.Pages;
 
-                r1.Output = user;
-                r1.message = "Success";
-                return r1;
+                    return r1;
+                }
+                else
+                {
+                    r1.message = "Error";
+                    return r1;
+                }
+
+               
             }
+        }
         [AllowAnonymous]
         private string Generate(Users user)
         {
@@ -120,7 +159,6 @@ namespace First_Project.Repository
             {
                 return "Error";
             }
-            
         }
         [AllowAnonymous]
         private Users Authenticate(SignIn signIn)
@@ -128,6 +166,12 @@ namespace First_Project.Repository
             var currentUser = dBConnection.users.FirstOrDefault(o => o.Email.ToLower() == signIn.Email.ToLower() && o.Password == signIn.Password);
 
             return currentUser;
+        }
+
+        public UserPermissions UserPermissions(string Email)
+        {
+            UserPermissions userper = dBConnection.userpermissions.FirstOrDefault(x => x.Email==Email);
+            return userper;
         }
     }
 }

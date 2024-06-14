@@ -83,7 +83,6 @@ namespace First_Project
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IPaymentDetailsRepository, PaymentDetailsRepository>();
 
-
             services.AddControllers();
 
             services.AddCors(options => options.AddPolicy(name: ShopKartPolicy, p => p
