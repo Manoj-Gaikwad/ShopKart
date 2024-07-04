@@ -29,6 +29,7 @@ namespace First_Project.Data
         public DbSet<ShoesData> shoes { get; set; }
         public DbSet<ShoesAllData> subshoesimages { get; set; }
         public DbSet<Users> users { get; set; }
+        public DbSet<UserPermissions> userpermissions { get; set; }
 
 
     }

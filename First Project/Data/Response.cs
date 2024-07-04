@@ -9,5 +9,6 @@ namespace First_Project.Data
     {
         public object Output { get; set; }
         public object message { get; set; }
+        public string Pages { get; set; }
     }
 }

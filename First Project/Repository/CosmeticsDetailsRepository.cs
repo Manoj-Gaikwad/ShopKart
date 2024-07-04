@@ -21,7 +21,9 @@ namespace First_Project.Repository
 
         public async Task<List<CosmeticsData>>GetCosmeticsData()
         {
+          
             return await dbconnection.cosmetic.ToListAsync();
+       
         }
 
         public async Task<Object>addCosmeticsData(CosmeticsData cosmeticsData)

@@ -40,7 +40,6 @@ namespace First_Project.Controllers
                 return result;
         }
 
-
         [AllowAnonymous]
         [HttpPost("SignIn")]
         public object SignIn([FromBody] SignIn signIn)

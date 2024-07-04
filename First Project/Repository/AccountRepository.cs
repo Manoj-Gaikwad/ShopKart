@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 
 
 
-
 namespace First_Project.Repository
 {
     public class AccountRepository : IAccountRepository
@@ -36,6 +35,8 @@ namespace First_Project.Repository
 
         public async Task<Boolean> SignUpAsync(SignUp signUp)
         {
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
             var Role = "user";
             var User = new Users()
             {
@@ -66,6 +67,8 @@ namespace First_Project.Repository
             smtp.Authenticate(_iconfiguration.GetValue<string>("SMTP:UserName"), _iconfiguration.GetValue<string>("SMTP:Password"));
             smtp.Send(email1);
             smtp.Disconnect(true);
+            watch.Stop();
+            Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
             return true;
         }
         [AllowAnonymous]
