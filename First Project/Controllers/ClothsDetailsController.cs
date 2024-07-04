@@ -19,8 +19,9 @@ namespace First_Project.Controllers
         {
             this.iclothsDetailsRepository = iclothsDetailsRepository;
         }
+
         [HttpGet("getClothsData")]
-        //[Authorize]
+        //[Authorize(Roles  = "admin")]
         public async Task<List<ClothsData>> getAllClothsDeta()
         {
             return await iclothsDetailsRepository.getAllCloths();

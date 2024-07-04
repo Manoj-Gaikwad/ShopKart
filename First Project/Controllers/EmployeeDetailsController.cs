@@ -39,7 +39,9 @@ namespace First_Project.Controllers
 
         public async Task<List<EmployeeDetails>> GetEmployeeDetails()
         {
+          
             return await emplyeeDetailsRepository.GetEmployeeDetails();
+          
         }
 
         [HttpGet("getEmployeeDetailsById/{id}")]

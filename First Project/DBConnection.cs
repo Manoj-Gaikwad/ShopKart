@@ -32,9 +32,5 @@ namespace First_Project.Data
         public DbSet<UserPermissions> userpermissions { get; set; }
 
 
-
-
-
-
     }
 }
